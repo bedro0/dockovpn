@@ -29,6 +29,12 @@ function createConfig() {
     cp config/client.ovpn $CLIENT_PATH
     sed -i 's/%HOST_TUN_PROTOCOL%/'"$HOST_TUN_PROTOCOL"'/g' $CLIENT_PATH/client.ovpn
 
+    if [[ -n $PORT_SHARE ]]; then
+        PORT_SHARE_IP=${PORT_SHARE%:*}
+        PORT_SHARE_PORT=${PORT_SHARE##*:}
+        echo -e "\nport-share $PORT_SHARE_IP $PORT_SHARE_PORT" >> "/etc/openvpn/server.conf"
+    fi
+    
     echo -e "\nremote $HOST_ADDR_INT $HOST_TUN_PORT" >> "$CLIENT_PATH/client.ovpn"
 
     # Embed client authentication files into config file
